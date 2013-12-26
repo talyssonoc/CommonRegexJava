@@ -1,0 +1,16 @@
+#java specific
+*.class
+
+#netbeans ignore personal stuff
+nbproject/
+build/
+
+*~
+*.lock
+*.DS_Store
+*.swp
+*.out
+*.war
+*.ear
+*.xml
+*.mf

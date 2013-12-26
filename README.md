@@ -1,0 +1,56 @@
+CommonRegexJava
+=============
+
+[CommonRegex](https://github.com/madisonmay/CommonRegex/ "CommonRegex") port for Java
+
+Find a lot of kinds of common information in a string.
+
+Pull requests welcome!
+
+Please note that this is currently English/US specific.
+
+API
+===
+
+You can instantiate a CommonRegex object passing a CharSequence (String, StringBuilder, StringBuffer...) in the constructor and use the methods without arguments to get the matches, or use the static methods passing the CharSequence as parameter.
+
+Methods:
+
+* `getDates([CharSequence text])`
+* `getTimes([CharSequence text])`
+* `getPhones([CharSequence text])`
+* `getLinks([CharSequence text])`
+* `getEmails([CharSequence text])`
+* `getIPv4([CharSequence text])`
+* `getHexColors([CharSequence text])`
+* `getAcronyms([CharSequence text])`
+* `getMoney([CharSequence text])`
+
+Examples
+========
+
+    String text = "John, please get that article on www.linkedin.com to me by 5:00PM\n"
+                + "on Jan 9th 2012. 4:00 would be ideal, actually. If you have any questions,\n"
+                + "you can reach my associate at (012)-345-6789 or associative@mail.com.\n"
+                + "I\'ll be in UK during the whole week at a J.R.R. Tolkien convention.";
+        
+    CommonRegex commonRegex = new CommonRegex(text);
+    commonRegex.dates; //["Jan 9th 2012"]
+    commonRegex.times; //["5:00PM", "4:00"]
+    commonRegex.phones; //["(012)-345-6789"]
+    commonRegex.links; //["www.linkedin.com"]
+    commonRegex.emails; //["associative@mail.com"]
+    ommonRegex.getAcronyms(); //["UK", "J.R.R."]
+
+Alternatively, you can generate a single CommonRegex instance and use it to parse multiple segments of text.
+
+    CommonRegex commonRegex = new CommonRegex();
+
+    commonRegex.times("When are you free? Do you want to meet up for coffee at 4:00?"); //["4:00"]
+    commonRegex.getMoney("They said the price was US$5,000.90, actually it is US$3,900.5. It\'s $1100.4 less, can you imagine this?"); //["US$5,000.90", "US$3,900.5", "$1100.4"]
+    
+For a pratical example, see the tests.
+
+CommonRegex Ports
+=================
+There are CommonRegex ports for other languages, see [here](https://github.com/madisonmay/CommonRegex/#commonregex-ports "CommonRegex ports")
