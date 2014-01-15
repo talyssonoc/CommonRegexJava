@@ -72,7 +72,13 @@ public class CommonRegexTest {
     @Test
     public void IPv4Test() {
         String [] result = new String [] {"127.0.0.1"};
-        assertArrayEquals(result, CommonRegex.getIPv4("The IPv4 address for localhost is 127.0.0.1"));
+        assertArrayEquals(result, CommonRegex.getIPv4("The IPv4 address for localhost is 127.0.0.1, but not 127.1"));
+    }
+    
+    @Test
+    public void IPv6Test() {
+        String [] result = new String [] {"0:0:0:0:0:0:0:1", "::1"};
+        assertArrayEquals(result, CommonRegex.getIPv6("The IPv6 address for localhost is 0:0:0:0:0:0:0:1, or alternatively, ::1, but not :1."));
     }
     
     @Test
@@ -91,5 +97,11 @@ public class CommonRegexTest {
     public void moneyTest() {
         String [] result = new String [] {"US$5,000.90", "US$3,900.5", "$1100.4"};
         assertArrayEquals(result, CommonRegex.getMoney("They said the price was US$5,000.90, actually it is US$3,900.5. It\'s $1100.4 less, can you imagine this?"));
+    }
+    
+    @Test
+    public void percentageTest() {
+        String [] result = new String [] {"99.9999999%", "5%"};
+        assertArrayEquals(result, CommonRegex.getPercentages("I\'m 99.9999999% sure that I\'ll get a raise of 5%."));
     }
 }

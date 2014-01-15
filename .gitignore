@@ -4,6 +4,7 @@
 #netbeans ignore personal stuff
 nbproject/
 build/
+dist/README.TXT
 
 *~
 *.lock

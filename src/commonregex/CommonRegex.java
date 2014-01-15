@@ -18,9 +18,12 @@ public class CommonRegex {
     private String[] links;
     private String[] emails;
     private String[] IPv4;
+    private String[] IPv6;
     private String[] hexColors;
     private String[] acronyms;
     private String[] money;
+    private String[] percentages;
+    
     //Patterns
     private static Pattern datePattern,
             timePattern,
@@ -28,9 +31,11 @@ public class CommonRegex {
             linkPattern,
             emailPattern,
             IPv4Pattern,
+            IPv6Pattern,
             hexColorPattern,
             acronymPattern,
-            moneyPattern;
+            moneyPattern,
+            percentagePattern ;
 
     static {
         String monthRegex = "(?:jan\\.?|january|feb\\.?|february|mar\\.?|march|apr\\.?|april|may|jun\\.?|june|jul\\.?|july|aug\\.?|august|sep\\.?|september|oct\\.?|october|nov\\.?|november|dec\\.?|december)";
@@ -51,9 +56,11 @@ public class CommonRegex {
 
         emailPattern = Pattern.compile("([a-z0-9!#$%&'*+\\/=?^_`{|}~-]+@([a-z0-9]+\\.)+([a-z0-9]+))", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
         IPv4Pattern = Pattern.compile("\\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b", Pattern.MULTILINE);
+        IPv6Pattern = Pattern.compile("((([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){6}:[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){5}:([0-9A-Fa-f]{1,4}:)?[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){4}:([0-9A-Fa-f]{1,4}:){0,2}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){3}:([0-9A-Fa-f]{1,4}:){0,3}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){2}:([0-9A-Fa-f]{1,4}:){0,4}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){6}((\\b((25[0-5])|(1\\d{2})|(2[0-4]\\d)|(\\d{1,2}))\\b)\\.){3}(\\b((25[0-5])|(1\\d{2})|(2[0-4]\\d)|(\\d{1,2}))\\b))|(([0-9A-Fa-f]{1,4}:){0,5}:((\\b((25[0-5])|(1\\d{2})|(2[0-4]\\d)|(\\d{1,2}))\\b)\\.){3}(\\b((25[0-5])|(1\\d{2})|(2[0-4]\\d)|(\\d{1,2}))\\b))|(::([0-9A-Fa-f]{1,4}:){0,5}((\\b((25[0-5])|(1\\d{2})|(2[0-4]\\d)|(\\d{1,2}))\\b)\\.){3}(\\b((25[0-5])|(1\\d{2})|(2[0-4]\\d)|(\\d{1,2}))\\b))|([0-9A-Fa-f]{1,4}::([0-9A-Fa-f]{1,4}:){0,5}[0-9A-Fa-f]{1,4})|(::([0-9A-Fa-f]{1,4}:){0,6}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){1,7}:))\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
         hexColorPattern = Pattern.compile("#(?:[0-9a-fA-F]{3}){1,2}\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
         acronymPattern = Pattern.compile("\\b(([A-Z]\\.)+|([A-Z]){2,})", Pattern.MULTILINE);
         moneyPattern = Pattern.compile("((^|\\b)US?)?\\$\\s?[0-9]{1,3}((,[0-9]{3})+|([0-9]{3})+)?(\\.[0-9]{1,2})?\\b", Pattern.MULTILINE);
+        percentagePattern = Pattern.compile("(100(\\.0+)?|[0-9]{1,2}(\\.[0-9]+)?)%", Pattern.MULTILINE);
     }
 
     public CommonRegex(CharSequence text) {
@@ -84,7 +91,7 @@ public class CommonRegex {
     private static String[] getMatches(Pattern pattern, CharSequence text) {
         Matcher matcher = pattern.matcher(text);
         ArrayList<String> matches = new ArrayList<>();
-        
+
         while (matcher.find()) {
             matches.add(matcher.group());
         }
@@ -104,7 +111,7 @@ public class CommonRegex {
 
     public String[] getDates() {
         System.out.println(datePattern.toString());
-        
+
         if (dates == null) {
             dates = getDates(text);
         }
@@ -171,6 +178,18 @@ public class CommonRegex {
 
         return IPv4;
     }
+    
+    public static String[] getIPv6(CharSequence text) {
+        return getMatches(IPv6Pattern, text);
+    }
+
+    public String[] getIPv6() {
+        if (IPv6 == null) {
+            IPv6 = getIPv6(text);
+        }
+
+        return IPv6;
+    }
 
     public static String[] getHexColors(CharSequence text) {
         return getMatches(hexColorPattern, text);
@@ -206,5 +225,17 @@ public class CommonRegex {
         }
 
         return money;
+    }
+    
+    public static String[] getPercentages(CharSequence text) {
+        return getMatches(percentagePattern, text);
+    }
+
+    public String[] getPercentages() {
+        if (percentages == null) {
+            percentages = getPercentages(text);
+        }
+
+        return percentages;
     }
 }
