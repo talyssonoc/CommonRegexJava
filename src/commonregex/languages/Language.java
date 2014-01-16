@@ -1,12 +1,10 @@
 package commonregex.languages;
 
-import static commonregex.CommonRegex.any;
-import static commonregex.CommonRegex.group;
-import static commonregex.CommonRegex.opt;
 import java.util.regex.Pattern;
 
 public enum Language {
-    en_US {
+
+    en_US("en_US") {
                 @Override
                 public Pattern getDatePattern() {
                     String monthRegex = "(?:jan\\.?|january|feb\\.?|february|mar\\.?|march|apr\\.?|april|may|jun\\.?|june|jul\\.?|july|aug\\.?|august|sep\\.?|september|oct\\.?|october|nov\\.?|november|dec\\.?|december)";
@@ -41,6 +39,16 @@ public enum Language {
                 }
             };
 
+    private String name;
+
+    Language(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
     public abstract Pattern getDatePattern();
 
     public abstract Pattern getTimePattern();
@@ -50,4 +58,32 @@ public enum Language {
     public abstract Pattern getMoneyPattern();
 
     public abstract Pattern getPercentagePattern();
+
+    public static Language fromString(String name) {
+        if (name != null) {
+            for (Language b : Language.values()) {
+                if (name.equalsIgnoreCase(b.name)) {
+                    return b;
+                }
+            }
+        }
+        return null;
+    }
+
+    private static String opt(String regex) {
+        return "(?:" + regex + ")?";
+    }
+
+    private static String group(String regex) {
+        return "(?:" + regex + ")";
+    }
+
+    private static String any(String[] regexes) {
+        StringBuilder any = new StringBuilder();
+        for (String string : regexes) {
+            any.append(string);
+            any.append("|");
+        }
+        return any.length() > 0 ? any.substring(0, any.length() - 1) : "";
+    }
 }
