@@ -81,14 +81,14 @@ public class CommonRegex {
     public static String[] getDates(String lang, CharSequence text) {
         Language l = Language.fromString(lang);
         if (l != null) {
-            return getMatches(l.getDatePattern(), text);
+            return getMatches(l.getLanguageSupport().getDatePattern(), text);
         } else {
             throw new UnsupportedLanguageException();
         }
     }
 
     public static String[] getDates(Language lang, CharSequence text) {
-        return getMatches(lang.getDatePattern(), text);
+        return getMatches(lang.getLanguageSupport().getDatePattern(), text);
     }
 
     public static String[] getDates(CharSequence text) {
@@ -106,14 +106,14 @@ public class CommonRegex {
     public static String[] getTimes(String lang, CharSequence text) {
         Language l = Language.fromString(lang);
         if (l != null) {
-            return getMatches(l.getTimePattern(), text);
+            return getMatches(l.getLanguageSupport().getTimePattern(), text);
         } else {
             throw new UnsupportedLanguageException();
         }
     }
 
     public static String[] getTimes(Language lang, CharSequence text) {
-        return getMatches(lang.getTimePattern(), text);
+        return getMatches(lang.getLanguageSupport().getTimePattern(), text);
     }
 
     public static String[] getTimes(CharSequence text) {
@@ -131,14 +131,14 @@ public class CommonRegex {
     public static String[] getPhones(String lang, CharSequence text) {
         Language l = Language.fromString(lang);
         if (l != null) {
-            return getMatches(l.getPhonePattern(), text);
+            return getMatches(l.getLanguageSupport().getPhonePattern(), text);
         } else {
             throw new UnsupportedLanguageException();
         }
     }
 
     public static String[] getPhones(Language lang, CharSequence text) {
-        return getMatches(lang.getPhonePattern(), text);
+        return getMatches(lang.getLanguageSupport().getPhonePattern(), text);
     }
 
     public static String[] getPhones(CharSequence text) {
@@ -228,14 +228,14 @@ public class CommonRegex {
     public static String[] getMoney(String lang, CharSequence text) {
         Language l = Language.fromString(lang);
         if (l != null) {
-            return getMatches(l.getMoneyPattern(), text);
+            return getMatches(l.getLanguageSupport().getMoneyPattern(), text);
         } else {
             throw new UnsupportedLanguageException();
         }
     }
 
     public static String[] getMoney(Language lang, CharSequence text) {
-        return getMatches(lang.getMoneyPattern(), text);
+        return getMatches(lang.getLanguageSupport().getMoneyPattern(), text);
     }
 
     public static String[] getMoney(CharSequence text) {
@@ -253,14 +253,14 @@ public class CommonRegex {
     public static String[] getPercentages(String lang, CharSequence text) {
         Language l = Language.fromString(lang);
         if (l != null) {
-            return getMatches(l.getPercentagePattern(), text);
+            return getMatches(l.getLanguageSupport().getPercentagePattern(), text);
         } else {
             throw new UnsupportedLanguageException();
         }
     }
 
     public static String[] getPercentages(Language lang, CharSequence text) {
-        return getMatches(lang.getPercentagePattern(), text);
+        return getMatches(lang.getLanguageSupport().getPercentagePattern(), text);
     }
 
     public static String[] getPercentages(CharSequence text) {
