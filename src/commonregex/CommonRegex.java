@@ -1,5 +1,7 @@
 package commonregex;
 
+import commonregex.languages.UnsupportedLanguageException;
+import commonregex.languages.Language;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,7 +12,7 @@ import java.util.regex.Pattern;
  */
 public class CommonRegex {
 
-    private CharSequence text;
+    private final CharSequence text;
     //Fields
     private String[] dates;
     private String[] times;
@@ -23,34 +25,17 @@ public class CommonRegex {
     private String[] acronyms;
     private String[] money;
     private String[] percentages;
-    
-    //Patterns
-    private static Pattern datePattern,
-            timePattern,
-            phonePattern,
-            linkPattern,
+
+    //Common Patterns
+    private final Language language;
+    private static Pattern linkPattern,
             emailPattern,
             IPv4Pattern,
             IPv6Pattern,
             hexColorPattern,
-            acronymPattern,
-            moneyPattern,
-            percentagePattern ;
+            acronymPattern;
 
     static {
-        String monthRegex = "(?:jan\\.?|january|feb\\.?|february|mar\\.?|march|apr\\.?|april|may|jun\\.?|june|jul\\.?|july|aug\\.?|august|sep\\.?|september|oct\\.?|october|nov\\.?|november|dec\\.?|december)";
-//        String dayRegex = "(?<!\\:)(?<!\\:\\d)[0-3]?\\d(?:st|nd|rd|th)?";
-        String dayRegex = "[0-3]?\\d(?:st|nd|rd|th)?";
-        String yearRegex = "\\d{4}";
-
-        String[] anyRegexes = new String[]{dayRegex + "\\s+(?:of\\s+)?" + monthRegex,
-            monthRegex + "\\s+" + dayRegex};
-
-        datePattern = Pattern.compile(group(any(anyRegexes)) + "(?:\\\\,)?\\s*" + opt(yearRegex) + "|[0-3]?\\d[-/][0-3]?\\d[-/]\\d{2,4}",
-                Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
-
-        timePattern = Pattern.compile("((0?[0-9]|1[0-2]):[0-5][0-9](am|pm)|([01]?[0-9]|2[0-3]):[0-5][0-9])", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
-        phonePattern = Pattern.compile("(\\d?[^\\s\\w]*(?:\\(?\\d{3}\\)?\\W*)?\\d{3}\\W*\\d{4})", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
         linkPattern = Pattern.compile("((?:https?:\\/\\/|www\\d{0,3}[.]|[a-z0-9.\\-]+[.][a-z]{2,4}\\/)(?:[^\\s()<>]+|\\((?:[^\\s()<>]+|(?:\\([^\\s()<>]+\\)))*\\))+(?:\\((?:[^\\s()<>]+|(?:\\([^\\s()<>]+\\)))*\\)|[^\\s`!()\\[\\]{};:\\'\".,<>?\\xab\\xbb\\u201c\\u201d\\u2018\\u2019]))",
                 Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
 
@@ -59,33 +44,21 @@ public class CommonRegex {
         IPv6Pattern = Pattern.compile("((([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){6}:[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){5}:([0-9A-Fa-f]{1,4}:)?[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){4}:([0-9A-Fa-f]{1,4}:){0,2}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){3}:([0-9A-Fa-f]{1,4}:){0,3}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){2}:([0-9A-Fa-f]{1,4}:){0,4}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){6}((\\b((25[0-5])|(1\\d{2})|(2[0-4]\\d)|(\\d{1,2}))\\b)\\.){3}(\\b((25[0-5])|(1\\d{2})|(2[0-4]\\d)|(\\d{1,2}))\\b))|(([0-9A-Fa-f]{1,4}:){0,5}:((\\b((25[0-5])|(1\\d{2})|(2[0-4]\\d)|(\\d{1,2}))\\b)\\.){3}(\\b((25[0-5])|(1\\d{2})|(2[0-4]\\d)|(\\d{1,2}))\\b))|(::([0-9A-Fa-f]{1,4}:){0,5}((\\b((25[0-5])|(1\\d{2})|(2[0-4]\\d)|(\\d{1,2}))\\b)\\.){3}(\\b((25[0-5])|(1\\d{2})|(2[0-4]\\d)|(\\d{1,2}))\\b))|([0-9A-Fa-f]{1,4}::([0-9A-Fa-f]{1,4}:){0,5}[0-9A-Fa-f]{1,4})|(::([0-9A-Fa-f]{1,4}:){0,6}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){1,7}:))\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
         hexColorPattern = Pattern.compile("#(?:[0-9a-fA-F]{3}){1,2}\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
         acronymPattern = Pattern.compile("\\b(([A-Z]\\.)+|([A-Z]){2,})", Pattern.MULTILINE);
-        moneyPattern = Pattern.compile("((^|\\b)US?)?\\$\\s?[0-9]{1,3}((,[0-9]{3})+|([0-9]{3})+)?(\\.[0-9]{1,2})?\\b", Pattern.MULTILINE);
-        percentagePattern = Pattern.compile("(100(\\.0+)?|[0-9]{1,2}(\\.[0-9]+)?)%", Pattern.MULTILINE);
+    }
+
+    public CommonRegex(CharSequence text, Language language) {
+        this.text = text;
+        this.language = language;
     }
 
     public CommonRegex(CharSequence text) {
         this.text = text;
+        this.language = Language.en_US;
     }
 
     public CommonRegex() {
         this.text = "";
-    }
-
-    private static String opt(String regex) {
-        return "(?:" + regex + ")?";
-    }
-
-    private static String group(String regex) {
-        return "(?:" + regex + ")";
-    }
-
-    private static String any(String[] regexes) {
-        StringBuilder any = new StringBuilder();
-        for (String string : regexes) {
-            any.append(string);
-            any.append("|");
-        }
-        return any.length() > 0 ? any.substring(0, any.length() - 1) : "";
+        this.language = Language.en_US;
     }
 
     private static String[] getMatches(Pattern pattern, CharSequence text) {
@@ -105,39 +78,76 @@ public class CommonRegex {
         return matchesArray;
     }
 
+    public static String[] getDates(String lang, CharSequence text) {
+        Language l = Language.fromString(lang);
+        if (l != null) {
+            return getMatches(l.getDatePattern(), text);
+        } else {
+            throw new UnsupportedLanguageException();
+        }
+    }
+
+    public static String[] getDates(Language lang, CharSequence text) {
+        return getMatches(lang.getDatePattern(), text);
+    }
+
     public static String[] getDates(CharSequence text) {
-        return getMatches(datePattern, text);
+        return getDates(Language.en_US, text);
     }
 
     public String[] getDates() {
-        System.out.println(datePattern.toString());
-
         if (dates == null) {
-            dates = getDates(text);
+            dates = getDates(language, text);
         }
 
         return dates;
     }
 
+    public static String[] getTimes(String lang, CharSequence text) {
+        Language l = Language.fromString(lang);
+        if (l != null) {
+            return getMatches(l.getTimePattern(), text);
+        } else {
+            throw new UnsupportedLanguageException();
+        }
+    }
+
+    public static String[] getTimes(Language lang, CharSequence text) {
+        return getMatches(lang.getTimePattern(), text);
+    }
+
     public static String[] getTimes(CharSequence text) {
-        return getMatches(timePattern, text);
+        return getTimes(Language.en_US, text);
     }
 
     public String[] getTimes() {
         if (times == null) {
-            times = getTimes(text);
+            times = getTimes(language, text);
         }
 
         return times;
     }
 
+    public static String[] getPhones(String lang, CharSequence text) {
+        Language l = Language.fromString(lang);
+        if (l != null) {
+            return getMatches(l.getPhonePattern(), text);
+        } else {
+            throw new UnsupportedLanguageException();
+        }
+    }
+
+    public static String[] getPhones(Language lang, CharSequence text) {
+        return getMatches(lang.getPhonePattern(), text);
+    }
+
     public static String[] getPhones(CharSequence text) {
-        return getMatches(phonePattern, text);
+        return getPhones(Language.en_US, text);
     }
 
     public String[] getPhones() {
         if (phones == null) {
-            phones = getPhones(text);
+            phones = getPhones(language, text);
         }
 
         return phones;
@@ -178,7 +188,7 @@ public class CommonRegex {
 
         return IPv4;
     }
-    
+
     public static String[] getIPv6(CharSequence text) {
         return getMatches(IPv6Pattern, text);
     }
@@ -215,25 +225,51 @@ public class CommonRegex {
         return acronyms;
     }
 
+    public static String[] getMoney(String lang, CharSequence text) {
+        Language l = Language.fromString(lang);
+        if (l != null) {
+            return getMatches(l.getMoneyPattern(), text);
+        } else {
+            throw new UnsupportedLanguageException();
+        }
+    }
+
+    public static String[] getMoney(Language lang, CharSequence text) {
+        return getMatches(lang.getMoneyPattern(), text);
+    }
+
     public static String[] getMoney(CharSequence text) {
-        return getMatches(moneyPattern, text);
+        return getMoney(Language.en_US, text);
     }
 
     public String[] getMoney() {
         if (money == null) {
-            money = getMoney(text);
+            money = getMoney(language, text);
         }
 
         return money;
     }
-    
+
+    public static String[] getPercentages(String lang, CharSequence text) {
+        Language l = Language.fromString(lang);
+        if (l != null) {
+            return getMatches(l.getPercentagePattern(), text);
+        } else {
+            throw new UnsupportedLanguageException();
+        }
+    }
+
+    public static String[] getPercentages(Language lang, CharSequence text) {
+        return getMatches(lang.getPercentagePattern(), text);
+    }
+
     public static String[] getPercentages(CharSequence text) {
-        return getMatches(percentagePattern, text);
+        return getPercentages(Language.en_US, text);
     }
 
     public String[] getPercentages() {
         if (percentages == null) {
-            percentages = getPercentages(text);
+            percentages = getPercentages(language, text);
         }
 
         return percentages;
