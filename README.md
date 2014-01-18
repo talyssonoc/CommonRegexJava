@@ -7,7 +7,7 @@ Find a lot of kinds of common information in a string.
 
 Pull requests welcome!
 
-Please note that this is currently English/US specific.
+It supports only US standards (for phones, times and so on) for a while.
 
 API
 ===
